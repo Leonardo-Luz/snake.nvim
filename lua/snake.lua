@@ -27,6 +27,7 @@ local state = {
       },
     },
   },
+  restore = {},
   loop = nil,
 }
 
@@ -43,16 +44,9 @@ local clear_map = function()
 end
 
 local game_over = function()
-  state.player.body = {}
-  state.player.direc = 0
-  state.player.body = {
-    {
-      y = 4,
-      x = 5,
-    },
-  }
-  state.food.items = {}
-  state.map.actual = {}
+  state.player = state.restore.player
+  state.food = state.restore.food
+  state.map = state.restore.map
 
   clear_map()
 
@@ -89,6 +83,25 @@ local config_remap = function()
     game_over()
   end, {
     buffer = state.window_config.floating.buf,
+  })
+
+  vim.keymap.set("n", "u", function()
+    if state.player.speed > 30 then
+      state.player.speed = state.player.speed - 10
+    end
+  end, {
+    buffer = state.window_config.floating.buf,
+    noremap = true,
+    silent = true,
+  })
+  vim.keymap.set("n", "d", function()
+    if state.player.speed < 1500 then
+      state.player.speed = state.player.speed + 10
+    end
+  end, {
+    buffer = state.window_config.floating.buf,
+    noremap = true,
+    silent = true,
   })
 
   vim.keymap.set("n", "h", function()
@@ -205,6 +218,11 @@ end
 
 M.start_game = function()
   math.randomseed(os.time())
+  state.restore = {
+    player = state.player,
+    map = state.map,
+    food = state.food,
+  }
 
   state.window_config = window_setup()
   state.window_config.floating = floatwindow.create_floating_window(state.window_config)
@@ -217,8 +235,6 @@ M.start_game = function()
 
   state.loop = vim.fn.timer_start(state.player.speed, update_content, { ["repeat"] = -1 })
 end
-
-vim.api.nvim_create_user_command("Exit", game_over, {})
 
 vim.api.nvim_create_user_command("Snake", M.start_game, {})
 

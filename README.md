@@ -31,4 +31,6 @@
   * `j`: Move Up
   * `k`: Move Down
   * `l`: Move Right
+  * `u`: Speed Up
+  * `d`: Speed Down
 
