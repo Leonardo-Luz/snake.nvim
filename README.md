@@ -1,5 +1,7 @@
 ## snake.nvim
 
+**Dependencies:** This plugin require `leonardo-luz/floatwindow`
+
 **Installation:**  Add `leonardo-luz/snake.nvim` to your Neovim plugin manager (e.g., `init.lua` or `plugins/snake.lua`).
 
 **Lazy***
