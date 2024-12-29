@@ -4,7 +4,7 @@
 
 **Installation:**  Add `leonardo-luz/snake.nvim` to your Neovim plugin manager (e.g., `init.lua` or `plugins/snake.lua`).
 
-**Lazy***
+**Lazy**
 ```lua
 {
   'leonardo-luz/snake.nvim',
