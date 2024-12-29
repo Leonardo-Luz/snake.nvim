@@ -5,7 +5,7 @@
 **Lazy***
 ```lua
 {
-  'leonardo-luz',
+  'leonardo-luz/snake.nvim',
   opts = {}, -- Default values
   -- OR
   opts = { -- Custom values
