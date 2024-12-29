@@ -146,7 +146,7 @@ update_content = function()
   if loop_count >= state.food.spawn_rate and #state.food.items < state.food.max_foods then
     local new_fruit = {
       x = math.random(1, state.map.map_size.x - 2),
-      y = math.random(1, state.map.map_size.y - 1),
+      y = math.random(2, state.map.map_size.y - 1),
     }
     table.insert(state.food.items, new_fruit)
     loop_count = 0
