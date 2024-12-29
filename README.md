@@ -2,6 +2,24 @@
 
 **Installation:**  Add `leonardo-luz/snake.nvim` to your Neovim plugin manager (e.g., `init.lua` or `plugins/snake.lua`).
 
+**Lazy***
+```lua
+{
+  'leonardo-luz',
+  opts = {}, -- Default values
+  -- OR
+  opts = { -- Custom values
+    speed = 240,
+    map_size = { 
+      x = 20, 
+      y = 20
+    },
+    max_foods = 1,
+    spawn_rate = 5,
+  }
+}
+```
+
 **Usage:**
 
 * To start playing: `:Snake`
