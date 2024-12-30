@@ -6,8 +6,8 @@ local state = {
   window_config = {},
   map = {
     map_size = {
-      x = 40,
-      y = 20,
+      x = 60,
+      y = 40,
     },
     actual = {},
   },
@@ -17,7 +17,9 @@ local state = {
     items = {},
   },
   player = {
-    speed = 240,
+    score = 0,
+    highscore = 0,
+    speed = 70,
     direc = 0,
     old_direc = 0,
     body = {
@@ -32,10 +34,20 @@ local state = {
 }
 
 local clear_map = function()
-  for i = 1, state.map.map_size.y do
+  for i = 1, state.map.map_size.y + 1 do
     local line = ""
     if i == 1 or i == state.map.map_size.y then
       line = string.rep("#", state.map.map_size.x)
+    elseif i == state.map.map_size.y + 1 then
+      local score = string.format("SCORE: %d", state.player.score)
+      local highscore = string.format("HIGHSCORE: %d", state.player.highscore)
+
+      line = string.format(
+        "%s%s%s",
+        score,
+        string.rep(" ", state.map.map_size.x - string.len(score) - string.len(highscore)),
+        highscore
+      )
     else
       line = "#" .. string.rep(" ", state.map.map_size.x - 2) .. "#"
     end
@@ -44,16 +56,25 @@ local clear_map = function()
 end
 
 local game_over = function()
-  state.player = state.restore.player
-  state.food = state.restore.food
-  state.map = state.restore.map
+  if state.player.score > state.player.highscore then
+    state.player.highscore = state.player.score
+  end
 
-  clear_map()
+  state.player.score = 0
 
-  vim.fn.timer_stop(state.loop)
-  vim.api.nvim_win_close(state.window_config.floating.win, true)
+  state.player.body = {
+    {
+      x = 4,
+      y = 5,
+    },
+  }
+  state.player.direc = 0
+  state.player.old_direc = 0
+  state.player.speed = state.restore.player.speed
 
-  state.loop = nil
+  state.food.items = {}
+  state.food.max_foods = state.restore.food.max_foods
+  state.food.spawn_rate = state.restore.food.spawn_rate
 end
 
 local window_setup = function()
@@ -70,9 +91,9 @@ local window_setup = function()
       relative = "editor",
       style = "minimal",
       width = state.map.map_size.x,
-      height = state.map.map_size.y,
+      height = state.map.map_size.y + 1,
       col = math.floor((width - state.map.map_size.x) / 2),
-      row = math.floor((height - state.map.map_size.y) / 2),
+      row = math.floor((height - state.map.map_size.y + 2) / 2),
     },
     enter = true,
   }
@@ -80,28 +101,12 @@ end
 
 local config_remap = function()
   vim.keymap.set("n", "q", function()
-    game_over()
-  end, {
-    buffer = state.window_config.floating.buf,
-  })
+    vim.fn.timer_stop(state.loop)
+    vim.api.nvim_win_close(state.window_config.floating.win, true)
 
-  vim.keymap.set("n", "u", function()
-    if state.player.speed > 30 then
-      state.player.speed = state.player.speed - 10
-    end
+    state.loop = nil
   end, {
     buffer = state.window_config.floating.buf,
-    noremap = true,
-    silent = true,
-  })
-  vim.keymap.set("n", "d", function()
-    if state.player.speed < 1500 then
-      state.player.speed = state.player.speed + 10
-    end
-  end, {
-    buffer = state.window_config.floating.buf,
-    noremap = true,
-    silent = true,
   })
 
   vim.keymap.set("n", "h", function()
@@ -171,6 +176,7 @@ update_content = function()
 
   for i = 1, #state.food.items, 1 do
     if state.player.body[1].x == state.food.items[i].x and state.player.body[1].y == state.food.items[i].y then
+      state.player.score = state.player.score + 1
       table.insert(state.player.body, { x = state.player.body[1].x, y = state.player.body[1].y })
       table.remove(state.food.items, i)
       break
@@ -218,10 +224,15 @@ end
 
 M.start_game = function()
   math.randomseed(os.time())
+
   state.restore = {
-    player = state.player,
-    map = state.map,
-    food = state.food,
+    player = {
+      speed = state.player.speed,
+    },
+    food = {
+      max_foods = state.food.max_foods,
+      spawn_rate = state.food.spawn_rate,
+    },
   }
 
   state.window_config = window_setup()
