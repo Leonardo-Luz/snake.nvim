@@ -1,6 +1,10 @@
 ## snake.nvim
 
-**Dependencies:** This plugin require `leonardo-luz/floatwindow`
+*A Neovim Plugin that provides a text-based Snake game.*
+
+**Dependencies:**
+
+* `leonardo-luz/floatwindow`
 
 **Installation:**  Add `leonardo-luz/snake.nvim` to your Neovim plugin manager (e.g., `init.lua` or `plugins/snake.lua`).
 
@@ -8,29 +12,22 @@
 ```lua
 {
   'leonardo-luz/snake.nvim',
-  opts = {}, -- Default values
-  -- OR
-  opts = { -- Custom values
-    speed = 240,
-    map_size = { 
-      x = 20, 
-      y = 20
-    },
-    max_foods = 1,
-    spawn_rate = 5,
+  opts = { -- Optional configuration
+    speed = 240,          -- Game speed (milliseconds)
+    map_size = { x = 20, y = 20 }, -- Game board dimensions
+    max_foods = 1,        -- Maximum number of food items on the board
+    spawn_rate = 5,       -- Steps between food spawns
   }
 }
 ```
 
 **Usage:**
 
-* To start playing: `:Snake`
-* Navigation:
-  * `q`: Quit
-  * `h`: Move Left
-  * `j`: Move Up
-  * `k`: Move Down
-  * `l`: Move Right
-  * `u`: Speed Up
-  * `d`: Speed Down
+* Start the game: `:Snake`
+* Controls:
+    * `q`: Quit
+    * `h`: Move Left
+    * `j`: Move Down
+    * `k`: Move Up
+    * `l`: Move Right
 
