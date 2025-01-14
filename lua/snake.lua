@@ -3,7 +3,14 @@ local floatwindow = require("floatwindow")
 local M = {}
 
 local state = {
-  window_config = {},
+  window_config = {
+    floating = {
+      buf = -1,
+      win = -1,
+    },
+    opts = "",
+    enter = nil,
+  },
   map = {
     map_size = {
       x = 60,
@@ -82,10 +89,6 @@ local window_setup = function()
   local width = vim.o.columns
 
   return {
-    floating = {
-      buf = -1,
-      win = -1,
-    },
     ---@type vim.api.keyset.win_config
     opts = {
       relative = "editor",
@@ -108,6 +111,13 @@ local config_remap = function()
   end, {
     buffer = state.window_config.floating.buf,
   })
+
+  vim.keymap.set("n", "<Esc><Esc>", function()
+    vim.fn.timer_stop(state.loop)
+    vim.api.nvim_win_close(state.window_config.floating.win, true)
+
+    state.loop = nil
+  end, { buffer = state.window_config.floating.buf })
 
   vim.keymap.set("n", "h", function()
     if state.player.old_direc ~= 2 then
@@ -235,7 +245,11 @@ M.start_game = function()
     },
   }
 
-  state.window_config = window_setup()
+  local config = window_setup()
+
+  state.window_config.opts = config.opts
+  state.window_config.enter = config.enter
+
   state.window_config.floating = floatwindow.create_floating_window(state.window_config)
 
   clear_map()
@@ -247,7 +261,16 @@ M.start_game = function()
   state.loop = vim.fn.timer_start(state.player.speed, update_content, { ["repeat"] = -1 })
 end
 
-vim.api.nvim_create_user_command("Snake", M.start_game, {})
+local toggle_game = function()
+  if not vim.api.nvim_win_is_valid(state.window_config.floating.win) then
+    M.start_game()
+  else
+    vim.fn.timer_stop(state.loop)
+    vim.api.nvim_win_close(state.window_config.floating.win, true)
+  end
+end
+
+vim.api.nvim_create_user_command("Snake", toggle_game, {})
 
 ---@class snake.Opts
 ---@field speed integer:Milliseconds for each loop. Default: 240
