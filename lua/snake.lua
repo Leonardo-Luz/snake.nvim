@@ -46,13 +46,13 @@ local clear_map = function()
     if i == 1 or i == state.map.map_size.y then
       line = string.rep("#", state.map.map_size.x)
     elseif i == state.map.map_size.y + 1 then
-      local score = string.format("SCORE: %d", state.player.score)
-      local highscore = string.format("HIGHSCORE: %d", state.player.highscore)
+      local score = string.format("SCORE:%d", state.player.score)
+      local highscore = string.format("HIGHSCORE:%d", state.player.highscore)
 
       line = string.format(
         "%s%s%s",
         score,
-        string.rep(" ", state.map.map_size.x - string.len(score) - string.len(highscore)),
+        string.rep(".", state.map.map_size.x - string.len(score) - string.len(highscore)),
         highscore
       )
     else
