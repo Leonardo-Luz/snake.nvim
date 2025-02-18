@@ -21,10 +21,11 @@
 
 **Configuration Options**
 
-* `speed` (number, default: 240):  The game speed in milliseconds.  A lower number means faster gameplay.
+* `wall_collision` (boolean, default: `false`): Enables/disables wall collisions.  Game over if the snake hits a wall when enabled.
+* `speed` (number, default: `240`):  The game speed in milliseconds.  A lower number means faster gameplay.
 * `map_size` (table, default: `{x = 20, y = 20}`):  A table defining the game board dimensions: `{x = width, y = height}`.
-* `max_foods` (number, default: 1): The maximum number of food items that can appear on the board at once.
-* `spawn_rate` (number, default: 5): The number of game steps between the spawning of new food items.
+* `max_foods` (number, default: `1`): The maximum number of food items that can appear on the board at once.
+* `spawn_rate` (number, default: `5`): The number of game steps between the spawning of new food items.
 
 **Usage:**
 
