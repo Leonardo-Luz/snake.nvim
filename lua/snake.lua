@@ -36,6 +36,7 @@ local state = {
       },
     },
   },
+  wall_collision = true,
   restore = {},
   loop = nil,
 }
@@ -151,7 +152,7 @@ end
 
 local loop_count = 0
 
-local out_of_map = function()
+local hit_wall = function()
   return state.player.body[1].x > state.map.map_size.x - 2
     or state.player.body[1].x < 1
     or state.player.body[1].y > state.map.map_size.y - 1
@@ -210,9 +211,29 @@ update_content = function()
 
   state.player.old_direc = state.player.direc
 
-  if out_of_map() or eat_itself() then
-    game_over()
-    return
+  if state.wall_collision then
+    if hit_wall() or eat_itself() then
+      game_over()
+      return
+    end
+  else
+    if eat_itself() then
+      game_over()
+      return
+    end
+
+    if state.player.body[1].x > state.map.map_size.x - 2 then
+      state.player.body[1].x = 1
+    end
+    if state.player.body[1].x < 1 then
+      state.player.body[1].x = state.map.map_size.x - 2
+    end
+    if state.player.body[1].y > state.map.map_size.y - 1 then
+      state.player.body[1].y = 2
+    end
+    if state.player.body[1].y < 2 then
+      state.player.body[1].y = state.map.map_size.y - 1
+    end
   end
 
   for i = 1, #state.food.items do
@@ -273,6 +294,7 @@ end
 vim.api.nvim_create_user_command("Snake", toggle_game, {})
 
 ---@class snake.Opts
+---@field wall_collision boolean: Wall colliion. default: false
 ---@field speed integer:Milliseconds for each loop. Default: 240
 ---@field map_size { x: integer, y:integer }: Map size x by x. Default: 20x20
 ---@field max_foods integer: Max spawned foods on map. Default: 1
@@ -281,6 +303,7 @@ vim.api.nvim_create_user_command("Snake", toggle_game, {})
 ---Setup plugin
 ---@param opts snake.Opts
 M.setup = function(opts)
+  state.wall_collision = opts.wall_collision
   state.player.speed = opts.speed or 240
   state.map.map_size = opts.map_size or { x = 20, y = 20 }
   state.food.max_foods = opts.max_foods or 1
