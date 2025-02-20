@@ -245,9 +245,28 @@ update_content = function()
 
   for i = 1, #state.player.body do
     local new_row = state.map.actual[state.player.body[i].y]
-    state.map.actual[state.player.body[i].y] = new_row:sub(1, state.player.body[i].x)
-      .. "o"
-      .. new_row:sub(state.player.body[i].x + 2)
+
+    if i == 1 then
+      local head = "o"
+
+      if state.player.direc == 1 then
+        head = "^"
+      elseif state.player.direc == 2 then
+        head = ">"
+      elseif state.player.direc == 3 then
+        head = "v"
+      elseif state.player.direc == 4 then
+        head = "<"
+      end
+
+      state.map.actual[state.player.body[i].y] = new_row:sub(1, state.player.body[i].x)
+        .. head
+        .. new_row:sub(state.player.body[i].x + 2)
+    else
+      state.map.actual[state.player.body[i].y] = new_row:sub(1, state.player.body[i].x)
+        .. "+"
+        .. new_row:sub(state.player.body[i].x + 2)
+    end
   end
 
   vim.api.nvim_buf_set_lines(state.window_config.floating.buf, 0, -1, true, state.map.actual)
