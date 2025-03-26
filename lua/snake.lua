@@ -154,9 +154,9 @@ local loop_count = 0
 
 local hit_wall = function()
   return state.player.body[1].x > state.map.map_size.x - 2
-    or state.player.body[1].x < 1
-    or state.player.body[1].y > state.map.map_size.y - 1
-    or state.player.body[1].y < 2
+      or state.player.body[1].x < 1
+      or state.player.body[1].y > state.map.map_size.y - 1
+      or state.player.body[1].y < 2
 end
 
 local eat_itself = function()
@@ -217,11 +217,6 @@ update_content = function()
       return
     end
   else
-    if eat_itself() then
-      game_over()
-      return
-    end
-
     if state.player.body[1].x > state.map.map_size.x - 2 then
       state.player.body[1].x = 1
     end
@@ -234,13 +229,18 @@ update_content = function()
     if state.player.body[1].y < 2 then
       state.player.body[1].y = state.map.map_size.y - 1
     end
+
+    if eat_itself() then
+      game_over()
+      return
+    end
   end
 
   for i = 1, #state.food.items do
     local row = state.map.actual[state.food.items[i].y]
     state.map.actual[state.food.items[i].y] = row:sub(1, state.food.items[i].x)
-      .. "x"
-      .. row:sub(state.food.items[i].x + 2)
+        .. "x"
+        .. row:sub(state.food.items[i].x + 2)
   end
 
   for i = 1, #state.player.body do
@@ -260,12 +260,12 @@ update_content = function()
       end
 
       state.map.actual[state.player.body[i].y] = new_row:sub(1, state.player.body[i].x)
-        .. head
-        .. new_row:sub(state.player.body[i].x + 2)
+          .. head
+          .. new_row:sub(state.player.body[i].x + 2)
     else
       state.map.actual[state.player.body[i].y] = new_row:sub(1, state.player.body[i].x)
-        .. "+"
-        .. new_row:sub(state.player.body[i].x + 2)
+          .. "+"
+          .. new_row:sub(state.player.body[i].x + 2)
     end
   end
 
