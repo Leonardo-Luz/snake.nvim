@@ -37,6 +37,7 @@ local state = {
     },
   },
   wall_collision = true,
+  highscore_persistence = false,
   restore = {},
   loop = nil,
 }
@@ -318,6 +319,7 @@ vim.api.nvim_create_user_command("Snake", toggle_game, {})
 ---@field map_size { x: integer, y:integer }: Map size x by x. Default: 20x20
 ---@field max_foods integer: Max spawned foods on map. Default: 1
 ---@field spawn_rate integer: Spawn rate of food by loop. Default: 5
+---@field highscore_persistence boolean: Highscore will be persisted between sessions. Default: false
 
 ---Setup plugin
 ---@param opts snake.Opts
@@ -327,6 +329,7 @@ M.setup = function(opts)
   state.map.map_size = opts.map_size or { x = 20, y = 20 }
   state.food.max_foods = opts.max_foods or 1
   state.food.spawn_rate = opts.spawn_rate or 5
+  state.highscore_persistence = opts.highscore_persistence or false
 end
 
 return M
