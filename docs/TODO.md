@@ -1,10 +1,10 @@
 # TODO
 
 - [x] Use a `json` save Highscore
-- [ ] Add visual options for:
-  - [ ] Body
-  - [ ] Wall
-  - [ ] Food
-  - [ ] Start Position
-  - [ ] Background
-  - [ ] Each head side
+- [x] Add visual options for:
+  - [x] Body
+  - [x] Wall
+  - [x] Food
+  - [x] Start Position
+  - [x] Background
+  - [x] Each head side
