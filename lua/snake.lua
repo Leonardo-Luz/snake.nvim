@@ -1,4 +1,5 @@
 local floatwindow = require("floatwindow")
+local Path = require("plenary.path")
 
 local M = {}
 
@@ -38,9 +39,30 @@ local state = {
   },
   wall_collision = true,
   highscore_persistence = false,
+  data_file = Path:new(vim.fn.stdpath("data"), "snake-nvim-highscore.json"),
   restore = {},
   loop = nil,
 }
+
+local function read_data()
+  if state.data_file:exists() then
+    local file_content = state.data_file:read()
+    return vim.json.decode(file_content)
+  else
+    return {}
+  end
+end
+
+local function write_data(data)
+  state.data_file:write(vim.json.encode(data), "w")
+end
+
+local function set_data(key, value)
+  local data = read_data()
+  data[key] = value
+
+  write_data(data)
+end
 
 local clear_map = function()
   for i = 1, state.map.map_size.y + 1 do
@@ -49,6 +71,12 @@ local clear_map = function()
       line = string.rep("#", state.map.map_size.x)
     elseif i == state.map.map_size.y + 1 then
       local score = string.format("SCORE:%d", state.player.score)
+
+      if state.highscore_persistence then
+        local data = read_data()
+        state.player.highscore = data["highscore"] or 0
+      end
+
       local highscore = string.format("HIGHSCORE:%d", state.player.highscore)
 
       line = string.format(
@@ -66,6 +94,10 @@ end
 
 local game_over = function()
   if state.player.score > state.player.highscore then
+    if state.highscore_persistence then
+      set_data("highscore", state.player.score)
+    end
+
     state.player.highscore = state.player.score
   end
 
