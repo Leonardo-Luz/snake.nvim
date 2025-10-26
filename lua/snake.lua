@@ -42,6 +42,19 @@ local state = {
   data_file = Path:new(vim.fn.stdpath("data"), "snake-nvim-highscore.json"),
   restore = {},
   loop = nil,
+  visual = {
+    head = {
+      "^",
+      ">",
+      "v",
+      "<"
+    },
+    body = "+",
+    wall = "#",
+    background = " ",
+    food = "x",
+    start_pos = "o",
+  }
 }
 
 local function read_data()
@@ -68,7 +81,7 @@ local clear_map = function()
   for i = 1, state.map.map_size.y + 1 do
     local line = ""
     if i == 1 or i == state.map.map_size.y then
-      line = string.rep("#", state.map.map_size.x)
+      line = string.rep(state.visual.wall, state.map.map_size.x)
     elseif i == state.map.map_size.y + 1 then
       local score = string.format("SCORE:%d", state.player.score)
 
@@ -86,7 +99,7 @@ local clear_map = function()
         highscore
       )
     else
-      line = "#" .. string.rep(" ", state.map.map_size.x - 2) .. "#"
+      line = state.visual.wall .. string.rep(state.visual.background, state.map.map_size.x - 2) .. state.visual.wall
     end
     state.map.actual[i] = line
   end
@@ -272,7 +285,7 @@ update_content = function()
   for i = 1, #state.food.items do
     local row = state.map.actual[state.food.items[i].y]
     state.map.actual[state.food.items[i].y] = row:sub(1, state.food.items[i].x)
-        .. "x"
+        .. state.visual.food
         .. row:sub(state.food.items[i].x + 2)
   end
 
@@ -280,16 +293,10 @@ update_content = function()
     local new_row = state.map.actual[state.player.body[i].y]
 
     if i == 1 then
-      local head = "o"
+      local head = state.visual.start_pos
 
-      if state.player.direc == 1 then
-        head = "^"
-      elseif state.player.direc == 2 then
-        head = ">"
-      elseif state.player.direc == 3 then
-        head = "v"
-      elseif state.player.direc == 4 then
-        head = "<"
+      if state.player.direc > 0 then
+        head = state.visual.head[state.player.direc]
       end
 
       state.map.actual[state.player.body[i].y] = new_row:sub(1, state.player.body[i].x)
@@ -297,7 +304,7 @@ update_content = function()
           .. new_row:sub(state.player.body[i].x + 2)
     else
       state.map.actual[state.player.body[i].y] = new_row:sub(1, state.player.body[i].x)
-          .. "+"
+          .. state.visual.body
           .. new_row:sub(state.player.body[i].x + 2)
     end
   end
@@ -345,6 +352,15 @@ end
 
 vim.api.nvim_create_user_command("Snake", toggle_game, {})
 
+---@class GameVisual
+---@field head table Symbols for directions. { "^", ">", "v", "<" }
+---@field body string Body symbol. Default: "+"
+---@field wall string Wall symbol. Default: "#"
+---@field background string Background symbol. Default: " "
+---@field food string Food symbol. Default: "x"
+---@field start_pos string Start position symbol. Default: "o"
+
+
 ---@class snake.Opts
 ---@field wall_collision boolean: Wall colliion. default: false
 ---@field speed integer:Milliseconds for each loop. Default: 240
@@ -352,6 +368,7 @@ vim.api.nvim_create_user_command("Snake", toggle_game, {})
 ---@field max_foods integer: Max spawned foods on map. Default: 1
 ---@field spawn_rate integer: Spawn rate of food by loop. Default: 5
 ---@field highscore_persistence boolean: Highscore will be persisted between sessions. Default: false
+---@field visual GameVisual Visual of the game.
 
 ---Setup plugin
 ---@param opts snake.Opts
@@ -362,6 +379,19 @@ M.setup = function(opts)
   state.food.max_foods = opts.max_foods or 1
   state.food.spawn_rate = opts.spawn_rate or 5
   state.highscore_persistence = opts.highscore_persistence or false
+  state.visual = opts.visual or {
+    head = {
+      "^",
+      ">",
+      "v",
+      "<"
+    },
+    body = "+",
+    wall = "#",
+    background = " ",
+    food = "x",
+    start_pos = "o",
+  }
 end
 
 return M
