@@ -12,9 +12,18 @@
 ```lua
 {
   'leonardo-luz/snake.nvim',
+  dependencies = {
+    { 'leonardo-luz/floatwindow.nvim' },
+  },
   opts = {
-    -- Configuration options (see below)
-    -- Example: speed = 240,
+    wall_collision = false,
+    speed = 240,
+    map_size = {
+      x = 20,
+      y = 20
+    },
+    max_foods = 1,
+    spawn_rate = 5,
   }
 }
 ```
