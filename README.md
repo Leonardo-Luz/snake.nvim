@@ -24,6 +24,7 @@
     },
     max_foods = 1,
     spawn_rate = 5,
+    highscore_persistence = false,
   }
 }
 ```
@@ -35,6 +36,7 @@
 * `map_size` (table, default: `{x = 20, y = 20}`):  A table defining the game board dimensions: `{x = width, y = height}`.
 * `max_foods` (number, default: `1`): The maximum number of food items that can appear on the board at once.
 * `spawn_rate` (number, default: `5`): The number of game steps between the spawning of new food items.
+* `highscore_persistence` (boolean, default: `false`): Enable this option to persist the highscore between sessions.
 
 **Usage:**
 
