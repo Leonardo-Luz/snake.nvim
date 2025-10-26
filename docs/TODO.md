@@ -8,3 +8,4 @@
   - [x] Start Position
   - [x] Background
   - [x] Each head side
+- [ ] Modularize the project
