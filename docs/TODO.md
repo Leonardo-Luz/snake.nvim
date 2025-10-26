@@ -1,3 +1,3 @@
 # TODO
 
-- [ ] Use a `json` save Highscore
+- [x] Use a `json` save Highscore
