@@ -2,6 +2,8 @@
 
 *A Neovim Plugin that provides a text-based Snake game.*
 
+![Snake Gif](./assets/snake.gif)
+
 **Dependencies:**
 
 * `leonardo-luz/floatwindow.nvim`
